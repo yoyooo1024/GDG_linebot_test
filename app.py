@@ -13,6 +13,8 @@ from linebot.models import (
 from linebot.exceptions import InvalidSignatureError
 import logging
 from places import get_nearby_restaurants
+from stock import txt_to_img_url
+
 # 加載 .env 文件中的變數
 load_dotenv()
 
@@ -65,8 +67,33 @@ def handle_message(event: Event):
             reply_text = get_nearby_restaurants()
         elif user_message == "課表":
             reply_text = "這是你的課表～"
+        elif user_message == "台積電股票":
+            try:
+                image_url = txt_to_img_url()
+                if not image_url:
+                    error_message = f"抱歉，沒有取得股票趨勢圖，{image_url}。"
+                    line_bot_api.reply_message(
+                        event.reply_token,
+                        TextMessage(text=error_message)
+                    )
+                    return
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    ImageSendMessage(
+                        original_content_url=image_url,
+                        preview_image_url=image_url
+                    )
+                )
+            except Exception as e:
+                error_message = f"抱歉，無法生成股票趨勢圖，錯誤原因：{e}"
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextMessage(text=error_message)
+                )
+            return
         else:
             reply_text = ("你說了：" + user_message)
+
 
 
         line_bot_api.reply_message(
