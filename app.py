@@ -61,7 +61,13 @@ def handle_message(event: Event):
         app.logger.info(f"收到的訊息: {user_message}")
 
         # 使用 GPT 生成回應
-        reply_text = ("你說了：" + user_message)
+        if user_message == "附近的餐廳":
+    reply_text = get_nearby_restaurants()
+        elif user_message == "課表":
+    reply_text = "這是你的課表～"
+        else:
+    reply_text = ("你說了：" + user_message)
+
 
         line_bot_api.reply_message(
             event.reply_token,
