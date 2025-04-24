@@ -12,7 +12,7 @@ from linebot.models import (
     ImageSendMessage)
 from linebot.exceptions import InvalidSignatureError
 import logging
-
+from places import get_nearby_restaurants
 # 加載 .env 文件中的變數
 load_dotenv()
 
